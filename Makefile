@@ -1,11 +1,11 @@
 CC = gcc
 OBJS = iom_main.o iom_write.o iom_read.o
-TARGET = iom
+TARGET = eiom
 
 BUILD_DIR := $(shell pwd)
 SRC_DIR := $(BUILD_DIR)/src
 INC_DIR := $(BUILD_DIR)/inc
-BIN_DIR := $(BUILD_DIR)/bin
+BIN_DIR := /usr/local/iom/bin
 
 CFLAGS = -I$(INC_DIR) -I$(SRC_DIR)
 
