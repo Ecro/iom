@@ -5,8 +5,8 @@
 #define KEY_CHAR_TIME_SIZE 12
 #define KEY_CHAR_TOTAL_SIZE 20
 
-#define KEY_CODE_FILE_NAME "log/key_code.log"
-#define KEY_USER_FILE_NAME "log/key_user.log"
+#define KEY_CODE_FILE_NAME "key_code.log"
+#define KEY_USER_FILE_NAME "key_user.log"
 
 typedef struct IOM_KeyCode
 {
