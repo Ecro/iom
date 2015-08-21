@@ -7,24 +7,30 @@
 
 #define KEY_CODE_FILE_NAME "key_code.log"
 #define KEY_USER_FILE_NAME "key_user.log"
-
-typedef struct IOM_KeyCode
-{
-	unsigned int value;
-	unsigned int isPressed;
-	unsigned long time;
-	unsigned int isShiftPressed;
-} IOM_KeyCode;
-
-typedef struct IOM_KeyUser
-{
-	char key;
-	unsigned int isChanged;
-} IOM_KeyUser;
+#define KEY_USER_MAX_CHAR 6
 
 typedef enum IOM_Error
 {
 	IOM_ERROR = -1,
 	IOM_SUCCESS = 0
 } IOM_Error;
+
+typedef enum IOM_Key_Type
+{
+	IOM_KEY_NORMAL = 0,
+	IOM_KEY_CONTROL
+} IOM_Key_Type;
+
+typedef struct IOM_KeyCode
+{
+	unsigned int value;
+	unsigned int isPressed;
+	unsigned long time;
+} IOM_KeyCode;
+
+typedef struct IOM_KeyUser
+{
+	char key[KEY_USER_MAX_CHAR];
+	int isChanged;
+} IOM_KeyUser;
 

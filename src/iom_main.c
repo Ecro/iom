@@ -3,7 +3,7 @@
 #include <fcntl.h>
 #include "iom.h"
 
-#define KBD_NUM "8"
+#define KBD_NUM "4"
 
 int kbd_fd;
 

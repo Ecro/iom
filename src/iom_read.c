@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <linux/input.h>
+#include <pthread.h>
 #include "iom.h"
 #include "iom_convert.h"
 
@@ -32,7 +33,8 @@ int iom_read(int fd)
 	IOM_KeyCode *keycode = (IOM_KeyCode *)malloc(sizeof(struct IOM_KeyCode));
 	IOM_KeyUser *keyuser = (IOM_KeyCode *)malloc(sizeof(struct IOM_KeyCode));
 	char keycode_char[KEY_CHAR_TOTAL_SIZE+2];
-	
+	int i;
+
 	keycode_fp = fopen(KEY_CODE_FILE_NAME, "w+");
 	if(keycode_fp == NULL)
 	{
@@ -54,17 +56,25 @@ int iom_read(int fd)
 		{
 			if(keycode->value != KEY_F12)
 			{
-				sprintf(keycode_char, "%04d%04d%012lu|", keycode->value, keycode->isPressed, keycode->time);
-				fwrite(keycode_char, strlen(keycode_char), 1, keycode_fp);
+				//sprintf(keycode_char, "%04d%04d%012lu|", keycode->value, keycode->isPressed, keycode->time);
+				//fwrite(keycode_char, strlen(keycode_char), 1, keycode_fp);
 				
 				if(iom_convert_keycode_to_keyuser(keycode, keyuser) == IOM_SUCCESS)
 				{
-					if(keyuser->isChanged != 0)
+					if(keyuser->isChanged == 1)
 					{
-						sprintf(keycode_char, "%c", keyuser->key);
-						fwrite(keycode_char, 1, 1, keyuser_fp);
+						if(keyuser->key[0] == '<')
+						{
+							for(i=0;i<KEY_USER_MAX_CHAR;i++)
+							{
+								fwrite(&keyuser->key[i], 1, 1, keyuser_fp);
+							}
+						}
+						else
+						{
+							fwrite(&keyuser->key[0], 1, 1, keyuser_fp);
+						}
 					}
-					keyuser->isChanged = 0;
 				}
 			}
 			else
