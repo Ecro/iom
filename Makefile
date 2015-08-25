@@ -1,5 +1,5 @@
 CC = gcc
-OBJS = iom_main.o iom_write.o iom_read.o iom_convert.o
+OBJS = iom_main.o iom_write.o iom_read.o iom_util.o
 TARGET = eiom
 
 BUILD_DIR := $(shell pwd)

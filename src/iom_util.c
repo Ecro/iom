@@ -1,7 +1,19 @@
 #include <stdio.h>
 #include <linux/input.h>
 #include "iom.h"
-#include "iom_convert.h"
+#include "iom_util.h"
+
+IOM_Error iom_check_control_word(IOM_KeyUser* keyUser, IOM_ControlWord* cw)
+{
+	if(keyUser->key[0] == '<' && keyUser->key[1] == 'D' && (keyUser->key[2] >= '0' && keyUser->key[2] <= '9'))
+	{
+		cw->delay_seconds = atoi(&keyUser->key[2]);
+		//printf("delay %d\n", cw->delay_seconds);
+		return IOM_DELAY;
+	}
+	else
+		return IOM_SUCCESS;
+}
 
 unsigned int iom_convert_keyuser_control(IOM_KeyUser* keyUser)
 {

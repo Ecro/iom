@@ -2,7 +2,7 @@
 #include <linux/input.h>
 #include <pthread.h>
 #include "iom.h"
-#include "iom_convert.h"
+#include "iom_util.h"
 
 int iom_read_key(int fd, IOM_KeyCode *keycode)
 {
@@ -18,7 +18,8 @@ int iom_read_key(int fd, IOM_KeyCode *keycode)
 	{
 		keycode->value = ev[1].code;
 		keycode->isPressed = ev[1].value;
-		keycode->time = ev[1].time.tv_sec;
+		keycode->seconds = ev[1].time.tv_sec;
+		keycode->micro_seconds = ev[1].time.tv_usec;
 		//printf("[%s][%s]key : %d, isPressed : %d\n", APP_NAME, __FUNCTION__, keycode->value, keycode->isPressed);
 	}
 	else
@@ -29,23 +30,15 @@ int iom_read_key(int fd, IOM_KeyCode *keycode)
 
 int iom_read(int fd)
 {
-	FILE *keycode_fp, *keyuser_fp;
+	FILE *keyuser_fp;
 	IOM_KeyCode *keycode = (IOM_KeyCode *)malloc(sizeof(struct IOM_KeyCode));
 	IOM_KeyUser *keyuser = (IOM_KeyCode *)malloc(sizeof(struct IOM_KeyCode));
 	char keycode_char[KEY_CHAR_TOTAL_SIZE+2];
 	int i;
 
-	keycode_fp = fopen(KEY_CODE_FILE_NAME, "w+");
-	if(keycode_fp == NULL)
-	{
-		printf("[%s][ERR] fail to open %s\n", APP_NAME, KEY_CODE_FILE_NAME);
-		return IOM_ERROR;
-	}
-
 	keyuser_fp = fopen(KEY_USER_FILE_NAME, "w+");
 	if(keyuser_fp == NULL)
 	{
-		fclose(keycode_fp);
 		printf("[%s][ERR] fail to open %s\n", APP_NAME, KEY_USER_FILE_NAME);
 		return IOM_ERROR;
 	}
@@ -79,7 +72,6 @@ int iom_read(int fd)
 			}
 			else
 			{
-				fclose(keycode_fp);
 				fclose(keyuser_fp);
 				free(keyuser);
 				free(keycode);

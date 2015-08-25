@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <linux/input.h>
 #include "iom.h"
+#include "iom_util.h"
 
 int iom_write_key(int fd, IOM_KeyCode *keycode, int type)
 {
@@ -45,7 +46,8 @@ int iom_write(int fd)
 	int i, ret = 0;
 	FILE *keyuser_fp;
 	IOM_KeyUser *keyuser = (IOM_KeyUser *)malloc(sizeof(struct IOM_KeyUser));
-	IOM_KeyCode *keycode = (IOM_KeyCode *)malloc(sizeof(struct IOM_KeyCode));;
+	IOM_KeyCode *keycode = (IOM_KeyCode *)malloc(sizeof(struct IOM_KeyCode));
+	IOM_ControlWord *cw = (IOM_ControlWord *)malloc(sizeof(struct IOM_ControlWord));
 
 	keyuser_fp = fopen(KEY_USER_FILE_NAME, "r");
 	if(keyuser_fp == NULL)
@@ -63,20 +65,30 @@ int iom_write(int fd)
 				for(i=1;i<KEY_USER_MAX_CHAR;i++)
 					keyuser->key[i] = fgetc(keyuser_fp);
 			}
-			if(iom_convert_keyuser_to_keycode(keyuser, keycode) == IOM_SUCCESS)
+
+			ret = iom_check_control_word(keyuser, cw);
+			if(ret == IOM_DELAY)
 			{
-				if((keyuser->key[0] == '<' && keycode->isPressed == 1) || keyuser->key[0] == '>' && keycode->isPressed == 0)
-					iom_write_key(fd, keycode, IOM_KEY_CONTROL);
-				else
-					iom_write_key(fd, keycode, IOM_KEY_NORMAL);
+				sleep(cw->delay_seconds);
 			}
-			usleep(100);
+			else
+			{
+				if(iom_convert_keyuser_to_keycode(keyuser, keycode) == IOM_SUCCESS)
+				{
+					if((keyuser->key[0] == '<' && keycode->isPressed == 1) || keyuser->key[0] == '>' && keycode->isPressed == 0)
+						iom_write_key(fd, keycode, IOM_KEY_CONTROL);
+					else
+						iom_write_key(fd, keycode, IOM_KEY_NORMAL);
+				}
+				usleep(15000);
+			}
 		}
 	}
 
 	fclose(keyuser_fp);
 	free(keyuser);
 	free(keycode);
+	free(cw);
 
 	return ret;
 }

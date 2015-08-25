@@ -31,6 +31,11 @@
 #define IOM_CONTROL_KEY_STRING_F11			"<F11@>"
 #define IOM_CONTROL_KEY_STRING_F12			"<F12@>"
 
+typedef struct IOM_ControlWord
+{
+	unsigned int delay_seconds;
+} IOM_ControlWord;
 
+IOM_Error iom_check_control_word(IOM_KeyUser* keyUser, IOM_ControlWord* cw);
 IOM_Error iom_convert_keyuser_to_keycode(IOM_KeyUser* keyUser, IOM_KeyCode* keyCode);
 IOM_Error iom_convert_keycode_to_keyuser(IOM_KeyCode *keyCode, IOM_KeyUser* keyUser);

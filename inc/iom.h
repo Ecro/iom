@@ -12,7 +12,8 @@
 typedef enum IOM_Error
 {
 	IOM_ERROR = -1,
-	IOM_SUCCESS = 0
+	IOM_SUCCESS = 0,
+	IOM_DELAY = 1
 } IOM_Error;
 
 typedef enum IOM_Key_Type
@@ -25,7 +26,8 @@ typedef struct IOM_KeyCode
 {
 	unsigned int value;
 	unsigned int isPressed;
-	unsigned long time;
+	unsigned long seconds;
+	unsigned long micro_seconds;
 } IOM_KeyCode;
 
 typedef struct IOM_KeyUser
